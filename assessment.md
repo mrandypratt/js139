@@ -449,15 +449,141 @@ Any function which:
 2. Will always have the same return value given the same set of arguments
 
 # Testing with Jest
+## Why Write Tests:
+Prevents **regression** (aka breaking code which already worked)
 ## Jest
+1. Install Jest:
+Global
+```
+npm i -g jest
+```
+Dev Dependency
+```
+npm i -D jest
+```
+2. Create `jest.config.js`
+No contents necessary, but must exist to run.
+```
+touch jest.config.js
+```
+3. Create test file(s)
+`filename.test.js`
+```javascript
+test('two plus two is four', () => {
+  expect(2 + 2).toBe(4);
+});
+```
+4. Run Test
+`jest` or `jest filename.test.js`
+
 ## Testing terminology
+### **Test Suite**
+Entire set of tests for a project/program/application.
+### **Test** (aka **Specs**)
+Specific situation testing for made up of one or more assertions.
+### **Assertion** (aka **Expectations**)
+Verification step confirming the program did what it should.
+
 ## Writing tests
+1. export the code you want to test using `module.exports =`
+2. require the file to be tested in your `jest` test file
+  - if the file being tested is `file.js`, the test file should be named `file.test.js`
+  - 
+3. Create tests to run on file
+`file.test.js`
+```javascript
+const Car = require("./file");
+
+describe("The Car class", () => { // Grouping of tests
+  test("has four wheels", () => { // Test
+    let car = new Car();
+    expect(car.wheels).toBe(4); // Assertion (expect) & Matcher (toBe)
+  });
+});
+```
+Skipping Tests: replace `test` with `xtest` or append `.skip` after to skip a test.
 ## expect and matchers (toBe and toEqual especially)
+| Matcher	| Description |
+| toBe | Fails unless actual value === expected value |
+| toEqual | Same as toBe but can also test for object equality, e.g., {a: 1} is equal to {a: 1} |
+| toBeUndefined | Fails unless the actual value is undefined. Same as toBe(undefined) |
+| toThrow | Fails unless the expression passed in to expect raises/throws an error |
+| toBeNull | Fails unless the actual value is null. Same as toBe(null) |
+| toBeTruthy | Fails unless the actual value is truthy |
+| toContain | Fails unless the given array includes a value. Also finds substrings in strings. |
+
 ## SEAT approach
+### **S**et up the neccessary objects
+Rather than this...
+```javascript
+const Car = require('./car');
+
+describe('The Car class', () => {
+  test('has four wheels', () => {
+    let car = new Car(); // Repetitive Code
+    expect(car.wheels).toBe(4);
+  });
+
+  test('two newly created cars are object equal', () => {
+    let car1 = new Car(); // Repetitive Code
+    let car2 = new Car();
+
+    expect(car1).toEqual(car2);
+  });
+
+  test('a newly created car does not have doors', () => {
+    let car = new Car(); // Repetitive Code
+    expect(car.doors).toBeUndefined();
+  });
+});
+```
+...use the `beforeEach()` method to instantiate objects/variables or invoke functions prior to each test.
+```javascript
+const Car = require('./car');
+
+describe('The Car class', () => {
+  let car; // note we declare outside of beforeEach due to lexical scope
+  beforeEach(() => {
+    car = new Car();
+  });
+  
+  test('has four wheels', () => {
+    expect(car.wheels).toBe(4);
+  });
+
+  test('two newly created cars are object equal', () => {
+    let car2 = new Car();
+
+    expect(car1).toEqual(car2);
+  });
+
+  test('a newly created car does not have doors', () => {
+    expect(car.doors).toBeUndefined();
+  });
+});
+```
+### **E**xecute the code against the object we're testing
+### **A**ssert the results of execution
+### **T**ear down and clean up any lingering artifacts.
+`afterEach()` is available for logging info, file cleanup, or stopping database connections after each test.
+
 ## Understanding code coverage
+### Calculation
+Determined based on percentage of functions/methods called by test OR percentage of lines of code executed by tests.
+Does not consider if code does what it was designed to do, just that it was called by the test.
+### Checking Coverage
+```
+jest --coverage todolist.test.js
+```
 
 # Packaging
 ## Project directory layout
+### Project
+A collection of files used to develop, test, build, and distribute software.
+Software includes executable program, library module, or a combination.
+The project includes the source code, tests, assets, databases, config files, and more.
+### Setting Up a Project
+
 ## npm and npx
 ## package.json and package-lock.json
 ## what is transpilation
