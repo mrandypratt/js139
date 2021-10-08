@@ -1,33 +1,23 @@
-let { log } = require("./log");
+setTimeout(function() { 
+  setTimeout(function() {
+    q(); // 7
+  }, 15);
 
-// Closure with Object
-let item = (name) => {
-  let itemName = name;
-  
-  return {
-    name() {
-      return itemName;
-    },
-    
-    updateName(newName) {
-      itemName = newName;
-      return itemName;
-    }
-  };
-};
+  d(); // 3
 
-let item1 = item("Harold")
-let item2 = item("Kumar")
+  setTimeout(function() {
+    n(); // 5
+  }, 5);
 
-log(item1);
-log(item1.name());
-log(item2);
-log(item2.name());
+  z(); // 4
+}, 10);
 
+setTimeout(function() {
+  s(); // 6
+}, 20);
 
-// IIFE
+setTimeout(function() { 
+  f(); // 2
+});
 
-// Closure in IIFE
-
-// return IIFE containing Closure
-
+g(); // 1

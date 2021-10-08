@@ -449,8 +449,10 @@ Any function which:
 2. Will always have the same return value given the same set of arguments
 
 # Testing with Jest
+
 ## Why Write Tests:
 Prevents **regression** (aka breaking code which already worked)
+
 ## Jest
 1. Install Jest:
 Global
@@ -577,22 +579,132 @@ jest --coverage todolist.test.js
 ```
 
 # Packaging
+
 ## Project directory layout
+
 ### Project
 A collection of files used to develop, test, build, and distribute software.
 Software includes executable program, library module, or a combination.
 The project includes the source code, tests, assets, databases, config files, and more.
+
 ### Setting Up a Project
+1. Initialize repository (locally or remotely)
+2. npm init (create package.json)
+3. .gitignore (`echo node_modules >> .gitignore`)
+4. Folders
+  a. test: => contains all tests
+  b. lib: => code files
+  c. node_modules => created when downloading dependencies
 
 ## npm and npx
+- npm => Used to install a package intended to be `require`'d by your project
+- npx => Executable CLI tool used with project (ie eslint).
+
 ## package.json and package-lock.json
-## what is transpilation
+
+### `package.json`
+A configuration file used to manage dependencies along with other ease of use features.
+`npm init` => Estabilshes a `package.json`:
+   - Store Dependencies and versioning preferences for project
+   - Allow projects to be transmitted more efficiently
+   - Allows someone to install depenencies automatically with `npm install`
+   - Store scripts which can automate certain CLI commands
+
+### `package-lock.json`
+File which shows the precise versions of packages which were installed upon `npm install` or `npm i -S pkg`
+
+### Installing 
+1. install/uninstall globally: `npm i -g pkg` | `npm r -g pkg`
+  - Installs in path for access by all directories
+  - Recommended for CLI Executables (i.e. heroku) and other non-project related CLI tools.
+  - Not recommended for project files since the environment cannot be easily cloned (ie versioning, dependencies)
+2. install/uninstall: `npm i pkg` | `npm r pkg`
+  - fine for trying out packages
+  - does not save any dependency or versioning data
+3. Install/Uninstall as Dependency: `npm i -S pkg` | `npm r -S pkg`
+  - must have `package.json`
+4. Install/Uninstall as Dependency: `npm i -D pkg` | `npm r -D pkg`
+`npm prune` removes dependencies which were removed from `package.json` and no longer needed in `node_modules`
+
+### Requiring specific parts of a library
+```javascript
+// This imports the entire lodash package
+// Con: System memory needs to remember all this
+// Con: Processing lags due to loading the entire package
+const _ = require('lodash');
+
+// this option only pull from the 'chunk' file
+// Pro: Processing Efficient
+// Pro: Memory Efficient
+// Con: Only works for indepent files (no `require` within referenced file)
+const chunk = require('lodash/chunk');
+
+// this option loads the package, but only saves 'chunck'
+// Pro: Memory Efficient
+// Pro: Works with interdependent package files
+// Con: Processing lags due to loading the package before extracting 'chunck'
+const chunk = require('lodash').chunk;
+```
+
+## Transpilation
+The process of converting source code into another language or version.
+
+### Babel
+Most widely used tool for ES6 => ES5 transpilation amongst many other.
+To use Babel:
+1. Configure Babel to run automatically
+2. Install in Command Line (locally)
+  - Install: `npm i -D @babel/core @babel/cli`
+  - Transpile: `npx babel lib --out-dir dist`
+    - This command transpiles all files in `lib` and puts thim in a directory `dist`
+  - Install Presets/configure Babel to know how to transpiles
+    - Ex: ES5 Preset `env`
+      - Install preset => `npm install --save-dev @babel/preset-env`
+      - Run Command with preset => `npx babel lib --out-dir dist --presets=@babel/preset-env`
+
 ## npm scripts
-## packaging projects
+In `package.json`, key/value pairs contained in `"scripts": {}` become alias (key) for commands (value).
+To use an alias, use `npm run` followed by script name
 
 # Asynchronous programming
+Asynchronous functions do not block execution for the rest of the program.
+Asynchronous code doesn't run when the runtime encounters it
 ## `setTimeout`
+Accepts a callback function and the time to delay execution (in milliseconds)
+JS does nothing between the time the program finishes until the timer is up.
+Furthermore, JS will not run `setTimeout` until the entire program is finished, even if the time is 0!
 ## `setInterval`
+Accepts a callback function and a period of time to delay between invocations (in milliseconds)
+```javascript
+function save() {
+  // Send the form values to the server for safekeeping
+}
+
+// Call save() every 10 seconds
+var id = setInterval(save, 10000);
+
+// Later, perhaps after the user submits the form
+clearInterval(id);
+```
+
+## Promises
+A promise is a class which has three potential states: pending, fulfilled, and rejected.
+```javascript
+let p = new Promise((resolve, reject) => { // promise takes a callback as argument
+  let a = 1 + 1;
+  if (a === 2) { // => condition for success
+    resolve("Success");
+  } else {
+    reject("Failed");
+  }
+});
+
+p.then((message) => { // => then is activated upon fulfillment and may be chained
+  console.log(`This is in the then ${message}`);
+}).catch((message) => { // => catch activated upon rejection and handles errors or restarts process
+  console.log(`This is in the catch ${message}`);
+})
+```
 ## Event Loop
 
 Regex Review https://launchschool.com/books/regex
